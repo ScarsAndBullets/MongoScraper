@@ -1,6 +1,6 @@
-// Export object containing Mongo Scraper DB models
+// Exporting an object containing all of our models
 
 module.exports = {
-  Headline: require("./Headline"),
+  Article: require("./Article"),
   Note: require("./Note")
 };
