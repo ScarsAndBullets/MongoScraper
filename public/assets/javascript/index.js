@@ -1,5 +1,8 @@
+console.log(`Loaded index.js file with home.handlebars`);
+
 /* global bootbox */
 $(document).ready(function () {
+  console.log(`doc read function start`)
   // Setting a reference to the article-container div where all the dynamic content will go
   // Adding event listeners to any dynamically generated "save article"
   // and "scrape new article" buttons
@@ -114,6 +117,7 @@ $(document).ready(function () {
   function handleArticleScrape() {
     // This function handles the user clicking any "scrape new article" buttons
     $.get("/api/fetch").then(function (data) {
+      console.log(`Article scrape ran api fetch.`)
       // If we are able to successfully scrape the NYTIMES and compare the articles to those
       // already in our collection, re render the articles on the page
       // and let the user know how many unique articles we were able to save
