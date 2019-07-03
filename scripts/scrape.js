@@ -20,7 +20,7 @@ let scrape = cb => {
 
       $('div[class="queue"]')
         .find("div > div > div")
-        .each(function(i, element) {
+        .each(function (i, element) {
           var headline = $(element)
             .find("h2 > a")
             .text()
@@ -52,7 +52,7 @@ let scrape = cb => {
       articles => cb;
     })
 
-    .catch(function(error) {
+    .catch(function (error) {
       // handle error
       console.log(error);
     });
