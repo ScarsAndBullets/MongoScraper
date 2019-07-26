@@ -1,61 +1,64 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
+// scrape script
+// =============
 
-let scrape = cb => {
-  // Tell console what scrape.js is doing
-  console.log(`\n**********************************\n 
-  Scraping latest news and feature  \n 
-  articles from KSL.com's home page:\n 
-  **********************************\n`);
+// Require axios and cheerio, making our scrapes possible
+var axios = require("axios");
+var cheerio = require("cheerio");
 
-  axios
-    .get("https://www.ksl.com")
+// This function will scrape the NYTimes website
+var scrape = function () {
+  // Scrape the NYTimes website
+  return axios.get("http://www.ksl.com").then(function (res) {
+    var $ = cheerio.load(res.data);
+    console.log("scraping");
+    // Make an empty array to save our article info
+    var articles = [];
 
-    .then(response => {
-      // Loads Axios request into cheerio, saved into $
-      var $ = cheerio.load(response.data);
+    // Now, find and loop through each element that has the ".assetWrapper" class
+    // (i.e, the section holding the articles)
+    $('div[class="queue"]')
+      .find("div > div > div")
+      .each(function (i, element) {
+        // In each article section, we grab the headline, URL, and summary
 
-      // array for scraped data
-      var articles = [];
+        // Grab the headline of the article
+        var head = $(this)
+          .find("h2 > a")
+          .text()
+          .trim();
 
-      $('div[class="queue"]')
-        .find("div > div > div")
-        .each(function (i, element) {
-          var headline = $(element)
-            .find("h2 > a")
-            .text()
-            .trim();
-          var link = $(element)
-            .find("h2 > a")
-            .attr("href");
-          var summary = $(element)
-            .find("h5")
-            .text()
-            .trim();
+        // Grab the URL of the article
+        var url = $(this)
+          .find("h2 > a")
+          .attr("href");
 
-          if (headline && link && summary) {
-            var headNeat = headline
-              .replace(/(\r\n|\n|\r|\t|\s+)/gm, " ")
-              .trim();
-            var linkNeat = link.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
-            var summNeat = summary.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
+        // Grab the summary of the article
+        var sum = $(this)
+          .find("h5")
+          .text()
+          .trim();
 
-            var dataToAdd = {
-              headline: headNeat,
-              link: linkNeat,
-              summary: summNeat
-            };
-            articles.push(dataToAdd);
-          }
-        });
-      console.log(articles);
-      articles => cb;
-    })
+        // So long as our headline and sum and url aren't empty or undefined, do the following
+        if (head && sum && url) {
+          // This section uses regular expressions and the trim function to tidy our headlines and summaries
+          // We're removing extra lines, extra spacing, extra tabs, etc.. to increase to typographical cleanliness.
+          var headNeat = head.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
+          var sumNeat = sum.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
 
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    });
+          // Initialize an object we will push to the articles array
+          var dataToAdd = {
+            headline: headNeat,
+            summary: sumNeat,
+            url: "https://www.ksl.com" + url
+          };
+
+          // Push new article into articles array
+          articles.push(dataToAdd);
+        }
+      });
+    return articles;
+  });
 };
 
+// Export the function, so other files in our backend can use it
 module.exports = scrape;

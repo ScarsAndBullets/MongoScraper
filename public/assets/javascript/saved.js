@@ -1,5 +1,5 @@
 /* global bootbox */
-$(document).ready(function () {
+$(document).ready(function() {
   // Getting a reference to the article container div we will be rendering all articles inside of
   var articleContainer = $(".article-container");
   // Adding event listeners for dynamically generated buttons for deleting articles,
@@ -12,7 +12,7 @@ $(document).ready(function () {
 
   function initPage() {
     // Empty the article container, run an AJAX request for any saved headlines
-    $.get("/api/headlines?saved=true").then(function (data) {
+    $.get("/api/headlines?saved=true").then(function(data) {
       articleContainer.empty();
       // If we have headlines, render them to the page
       if (data && data.length) {
@@ -128,7 +128,7 @@ $(document).ready(function () {
     $.ajax({
       method: "DELETE",
       url: "/api/headlines/" + articleToDelete._id
-    }).then(function (data) {
+    }).then(function(data) {
       // If this works out, run initPage again which will re-render our list of saved articles
       if (data.ok) {
         initPage();
@@ -142,7 +142,7 @@ $(document).ready(function () {
       .parents(".card")
       .data();
     // Grab any notes with this headline/article id
-    $.get("/api/notes/" + currentArticle._id).then(function (data) {
+    $.get("/api/notes/" + currentArticle._id).then(function(data) {
       // Constructing our initial HTML to add to the notes modal
       var modalText = $("<div class='container-fluid text-center'>").append(
         $("<h4>").text("Notes For Article: " + currentArticle._id),
@@ -180,7 +180,7 @@ $(document).ready(function () {
     // and post it to the "/api/notes" route and send the formatted noteData as well
     if (newNote) {
       noteData = { _headlineId: $(this).data("article")._id, noteText: newNote };
-      $.post("/api/notes", noteData).then(function () {
+      $.post("/api/notes", noteData).then(function() {
         // When complete, close the modal
         bootbox.hideAll();
       });
@@ -196,7 +196,7 @@ $(document).ready(function () {
     $.ajax({
       url: "/api/notes/" + noteToDelete,
       method: "DELETE"
-    }).then(function () {
+    }).then(function() {
       // When done, hide the modal
       bootbox.hideAll();
     });
@@ -204,7 +204,7 @@ $(document).ready(function () {
 
   function handleArticleClear() {
     $.get("api/clear")
-      .then(function () {
+      .then(function() {
         articleContainer.empty();
         initPage();
       });

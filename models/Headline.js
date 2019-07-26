@@ -1,33 +1,43 @@
-let mongoose = require("mongoose");
+// Headline model
+// ==============
 
-// Saved reference to the Schema constructor
-let Schema = mongoose.Schema;
+// Require mongoose
+var mongoose = require("mongoose");
 
-// headlineSchema object created from Schema constructor
-let headlineSchema = new Schema({
+// Create a schema class using mongoose's schema method
+var Schema = mongoose.Schema;
+
+// Create the headlineSchema with our schema class
+var headlineSchema = new Schema({
+  // headline, a string, must be entered
   headline: {
     type: String,
     required: true,
-    unique: true
+    unique: { index: { unique: true } }
   },
+  // summary, a string, must be entered
   summary: {
     type: String,
     required: true
   },
-  link: {
+  // url, a string, must be entered
+  url: {
     type: String,
     required: true
   },
-  date: String,
+  // date is just a string
+  date: {
+    type: Date,
+    default: Date.now
+  },
   saved: {
     type: Boolean,
     default: false
   }
-
 });
 
-// This creates the model from the above schema, using mongoose's model method
-let Headline = mongoose.model("Headline", headlineSchema);
+// Create the Headline model using the headlineSchema
+var Headline = mongoose.model("Headline", headlineSchema);
 
 // Export the Headline model
 module.exports = Headline;
